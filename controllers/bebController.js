@@ -10,6 +10,7 @@ const index = (req, res) => {
   });
 };
 
+//show
 const show = (req, res) => {
   const id = req.params.id;
 
@@ -32,6 +33,7 @@ const show = (req, res) => {
   });
 };
 
+//update
 const update = (req, res) => {
   const id = req.params.id;
   const sql = `UPDATE homes SET ? WHERE id = ?`;
@@ -42,10 +44,12 @@ const update = (req, res) => {
   });
 };
 
+//store
 const store = (req, res) => {
   res.send("creazione di un b&b");
 };
 
+//store review
 const storeReview = (req, res) => {
   const id = req.params.id;
 
