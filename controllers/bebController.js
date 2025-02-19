@@ -46,9 +46,30 @@ const store = (req, res) => {
   res.send("creazione di un b&b");
 };
 
+const storeReview = (req, res) => {
+  const id = req.params.id
+
+  const { name, surname, vote, text } = req.body;
+
+  const sql = 'INSERT INTO reviews (name, surname, vote, text, home_id) VALUES(?, ?, ?, ?, ?)'
+
+  connection.query(sql, [name, surname, vote, text, id], (err, results) => {
+    if (err) return res.status(500).json({ error: 'query fallita', err })
+    res.status(201);
+    console.log(results);
+
+    res.json({ message: 'Review added', id: results.insertId })
+
+  })
+}
+
 module.exports = {
   index,
   show,
+<<<<<<< HEAD
   update,
   store,
+=======
+  storeReview
+>>>>>>> main
 };
