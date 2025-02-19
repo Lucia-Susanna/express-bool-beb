@@ -66,10 +66,7 @@ const storeReview = (req, res) => {
 module.exports = {
   index,
   show,
-<<<<<<< HEAD
   update,
   store,
-=======
   storeReview
->>>>>>> main
 };
