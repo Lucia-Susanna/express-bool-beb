@@ -46,12 +46,12 @@ const update = (req, res) => {
 
 //store
 const storeHomes = (req, res) => {
-  const { id, host_id, description, rooms, beds, restrooms, square_meters, address, likes } = req.body;
+  const { host_id, description, rooms, beds, restrooms, square_meters, address } = req.body;
 
-  const sql = `INSERT INTO homes (id, host_id, description, rooms, beds, restrooms, square_meters, address, likes) VALUES
- (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  const sql = `INSERT INTO homes ( host_id, description, rooms, beds, restrooms, square_meters, address, likes) VALUES
+ (?, ?, ?, ?, ?, ?, ?, 0)`
 
-  connection.query(sql, [id, host_id, description, rooms, beds, restrooms, square_meters, address, likes], (err, results) => {
+  connection.query(sql, [ host_id, description, rooms, beds, restrooms, square_meters, address], (err, results) => {
     if (err) {
       return res.status(500).json({ error: "Query errata" });
     }
