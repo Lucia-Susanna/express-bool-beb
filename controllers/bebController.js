@@ -1,5 +1,6 @@
 const connection = require("../data/db");
 
+// rotta index
 const index = (req, res) => {
   const sql = "SELECT * FROM homes";
 
