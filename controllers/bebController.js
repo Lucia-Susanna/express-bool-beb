@@ -45,8 +45,19 @@ const update = (req, res) => {
 };
 
 //store
-const store = (req, res) => {
-  res.send("creazione di un b&b");
+const storeHomes = (req, res) => {
+  const {id, host_id, description, rooms, beds, restrooms, square_meters, address, likes} = req.body;
+
+ const sql = `INSERT INTO homes (id, host_id, description, rooms, beds, restrooms, square_meters, address, likes) VALUES
+ (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+
+ connection.query(sql, [id, host_id, description, rooms, beds, restrooms, square_meters, address, likes], (err, results) => {
+  if (err) {
+    return res.status(500).json({ error: "Query errata" });
+  }
+  res.status(201).json({ message: 'home added' })
+})
+
 };
 
 //store review
@@ -71,5 +82,6 @@ module.exports = {
   index,
   show,
   update,
-  store,
+  storeHomes,
+  storeReview
 };

@@ -8,7 +8,9 @@ router.get("/:id", controller.show);
 
 router.put("/:id", controller.update);
 
-router.post("/", controller.store);
-router.post('/:id/reviews', controller.storeReview)
+router.post("/", controller.storeHomes);
+
+router.post('/:id/reviews', controller.storeReview);
+
 
 module.exports = router;
