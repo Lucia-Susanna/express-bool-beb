@@ -6,4 +6,6 @@ router.get("/", controller.index);
 
 router.get("/:id", controller.show);
 
+router.post("/", controller.storeHomes)
+
 module.exports = router;
