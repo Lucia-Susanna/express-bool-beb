@@ -32,7 +32,13 @@ const show = (req, res) => {
 };
 
 const update = (req, res) => {
-  res.send("modifica di un b&b");
+  const id = req.params.id;
+  const sql = `UPDATE homes SET ? WHERE id = ?`;
+
+  connection.query(sql, [req.body, id], (error, result) => {
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ message: "Modifica effettuata" });
+  });
 };
 
 const store = (req, res) => {
@@ -42,4 +48,6 @@ const store = (req, res) => {
 module.exports = {
   index,
   show,
+  update,
+  store,
 };

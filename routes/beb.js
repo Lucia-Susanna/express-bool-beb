@@ -6,4 +6,8 @@ router.get("/", controller.index);
 
 router.get("/:id", controller.show);
 
+router.put("/:id", controller.update);
+
+router.post("/", controller.store);
+
 module.exports = router;
