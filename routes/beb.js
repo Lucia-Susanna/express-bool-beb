@@ -1,7 +1,9 @@
-const express = require('express')
-const router = express.Router()
-const controller = require('../controllers/bebController')
+const express = require("express");
+const router = express.Router();
+const controller = require("../controllers/bebController");
 
-router.get('/', controller.index)
+router.get("/", controller.index);
 
-module.exports = router
+router.get("/:id", controller.show);
+
+module.exports = router;
