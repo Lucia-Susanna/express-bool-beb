@@ -17,18 +17,31 @@ const index = (req, res) => {
 
     connection.query(sqlImg, (error, imgResult) => {
       if (error) return res.status(500).json({ error: error.message });
-      const urlImg = imgResult.map((img) => img.url);
+
+      // mappo imgResults in modo da modficare l'url concatendndo il path dato nel middleware con quello che mi arriva dal db.
+      // ottengo imagedata che è un array di oggetti con tutte le immagini (home_id e url)
+      const imgData = imgResult.map(img => ({
+        ...img,
+        url: `${req.imagePath}/${img.url}`
+      }));
+
+      // creo un nuovo array di oggetti definitivo che chiamo homes.
+      // lo creo mappando il result della prima query, ovvero le info di tutte le case. per ogni casa ricreo un oggetto che ha in più la proprietà imgs.
+      // imgs sarà imgData filtrato in base all'id della casa (in modo che ogni casa abbia solo le immagini che le appartengono). di queste immagini mi interessa solo l'url, quindi mappo per prendere solo quello.
       const homes = result.map((home) => {
         return {
           ...home,
-          imgs: imgResult
+          imgs: imgData
             .filter((img) => img.home_id === home.id)
-            .map((img) => img.url),
+            .map((img) => img.url)
         };
       });
+
+      // restituisco l'array di oggetti finale con le immagini
       res.json(homes);
     });
   });
+
 };
 
 //show

@@ -4,11 +4,13 @@ const bebRouter = require("./routes/beb");
 const cors = require("cors");
 const errorHand = require("./middlewares/errorHandler");
 const notFound = require("./middlewares/notFound");
+const imagePath = require("./middlewares/imagePath")
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(imagePath)
 
 app.use(
   cors({
