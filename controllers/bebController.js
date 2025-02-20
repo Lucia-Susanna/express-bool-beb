@@ -2,13 +2,31 @@ const connection = require("../data/db");
 
 // rotta index
 const index = (req, res) => {
-  const sql = "SELECT * FROM homes";
+  const sqlAvg = `SELECT homes.*, ROUND(AVG(reviews.vote), 0) AS avg_vote
+  FROM homes
+  LEFT JOIN reviews ON homes.id = reviews.home_id
+  GROUP BY homes.id`;
 
-  connection.query(sql, (error, result) => {
-    if (error) return res.status(500).json({ error: err.message });
-    res.json(result);
+  const sqlImg = `SELECT home_id, url 
+  FROM images`;
+
+  connection.query(sqlAvg, (error, result) => {
+    if (error) return res.status(500).json({ error: error.message });
+
+    connection.query(sqlImg, (error, imgResult) => {
+      if (error) return res.status(500).json({ error: error.message });
+      const urlImg = imgResult.map(img => img.url)
+      const homes = result.map(home => {
+        return {
+          ...home,
+          imgs: imgResult.filter(img => img.home_id === home.id).map(img => img.url)
+        };
+      });
+      res.json(homes);
+    });
   });
 };
+
 
 //show
 const show = (req, res) => {
@@ -45,8 +63,19 @@ const update = (req, res) => {
 };
 
 //store
-const store = (req, res) => {
-  res.send("creazione di un b&b");
+const storeHomes = (req, res) => {
+  const { host_id, description, rooms, beds, restrooms, square_meters, address } = req.body;
+
+  const sql = `INSERT INTO homes ( host_id, description, rooms, beds, restrooms, square_meters, address, likes) VALUES
+ (?, ?, ?, ?, ?, ?, ?, 0)`
+
+  connection.query(sql, [host_id, description, rooms, beds, restrooms, square_meters, address], (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Query errata" });
+    }
+    res.status(201).json({ message: 'home added' })
+  })
+
 };
 
 //store review
@@ -71,5 +100,6 @@ module.exports = {
   index,
   show,
   update,
-  store,
+  storeHomes,
+  storeReview
 };

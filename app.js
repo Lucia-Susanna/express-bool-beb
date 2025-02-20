@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: `${port}`,
+    origin: "http://localhost:5173"
   })
 );
 

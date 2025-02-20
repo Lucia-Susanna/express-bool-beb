@@ -12,4 +12,6 @@ router.post("/", controller.store);
 
 router.post("/:id/reviews", controller.storeReview);
 
+router.post("/", controller.storeHomes);
+
 module.exports = router;
