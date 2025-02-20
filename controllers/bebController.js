@@ -2,7 +2,8 @@ const connection = require("../data/db");
 
 // rotta index
 const index = (req, res) => {
-  const sqlAvg = `SELECT homes.*, ROUND(AVG(reviews.vote), 0) AS avg_vote, hosts.id AS host_id, hosts.name AS host_name, hosts.surname AS host_surname, hosts.email AS host_mail, hosts.phone AS host_phone
+  const sqlAvg = `SELECT homes.*, ROUND(AVG(reviews.vote), 0) 
+  AS avg_vote, hosts.id AS host_id, hosts.name AS host_name, hosts.surname AS host_surname, hosts.email AS host_mail, hosts.phone AS host_phone
   FROM homes
   LEFT JOIN reviews ON homes.id = reviews.home_id
   LEFT JOIN hosts ON homes.host_id = hosts.id
@@ -74,14 +75,13 @@ const updateLikes = (req, res) => {
   const id = req.params.id;
   const sql = `UPDATE homes 
 SET likes = likes + 1 
-WHERE id = ?;`
+WHERE id = ?;`;
 
   connection.query(sql, [id], (error, results) => {
     if (error) return res.status(500).json({ error: error.message });
     res.json({ message: `hai aggiunto un like alla casa con id ${id}` });
-  })
-}
-
+  });
+};
 
 //store
 const storeHomes = (req, res) => {
