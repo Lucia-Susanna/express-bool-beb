@@ -5,6 +5,7 @@ const index = (req, res) => {
   const sqlAvg = `SELECT homes.*, ROUND(AVG(reviews.vote), 0) AS avg_vote
   FROM homes
   LEFT JOIN reviews ON homes.id = reviews.home_id
+  LEFT JOIN hosts ON homes.host_id = hosts.id
   GROUP BY homes.id`;
 
   const sqlImg = `SELECT home_id, url 
@@ -15,11 +16,13 @@ const index = (req, res) => {
 
     connection.query(sqlImg, (error, imgResult) => {
       if (error) return res.status(500).json({ error: error.message });
-      const urlImg = imgResult.map(img => img.url)
-      const homes = result.map(home => {
+      const urlImg = imgResult.map((img) => img.url);
+      const homes = result.map((home) => {
         return {
           ...home,
-          imgs: imgResult.filter(img => img.home_id === home.id).map(img => img.url)
+          imgs: imgResult
+            .filter((img) => img.home_id === home.id)
+            .map((img) => img.url),
         };
       });
       res.json(homes);
@@ -27,12 +30,15 @@ const index = (req, res) => {
   });
 };
 
-
 //show
 const show = (req, res) => {
   const id = req.params.id;
 
-  const sql = `SELECT * FROM homes WHERE id = ?`;
+  const sql = `SELECT homes.*, hosts.id AS host_id, hosts.name AS host_name 
+              FROM homes
+              LEFT JOIN hosts ON homes.host_id = hosts.id
+              WHERE homes.id = ?`;
+
   const sqReviews = `SELECT * FROM reviews WHERE home_id = ?`;
 
   connection.query(sql, [id], (error, result) => {
@@ -64,18 +70,29 @@ const update = (req, res) => {
 
 //store
 const storeHomes = (req, res) => {
-  const { host_id, description, rooms, beds, restrooms, square_meters, address } = req.body;
+  const {
+    host_id,
+    description,
+    rooms,
+    beds,
+    restrooms,
+    square_meters,
+    address,
+  } = req.body;
 
   const sql = `INSERT INTO homes ( host_id, description, rooms, beds, restrooms, square_meters, address, likes) VALUES
- (?, ?, ?, ?, ?, ?, ?, 0)`
+ (?, ?, ?, ?, ?, ?, ?, 0)`;
 
-  connection.query(sql, [host_id, description, rooms, beds, restrooms, square_meters, address], (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: "Query errata" });
+  connection.query(
+    sql,
+    [host_id, description, rooms, beds, restrooms, square_meters, address],
+    (err, results) => {
+      if (err) {
+        return res.status(500).json({ error: "Query errata" });
+      }
+      res.status(201).json({ message: "home added" });
     }
-    res.status(201).json({ message: 'home added' })
-  })
-
+  );
 };
 
 //store review
@@ -101,5 +118,5 @@ module.exports = {
   show,
   update,
   storeHomes,
-  storeReview
+  storeReview,
 };
