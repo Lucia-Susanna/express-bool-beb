@@ -35,7 +35,7 @@ const index = (req, res) => {
 const show = (req, res) => {
   const id = req.params.id;
 
-  const sql = `SELECT homes.*, hosts.id AS host_id, hosts.name AS host_name 
+  const sql = `SELECT homes.*, hosts.id AS host_id, hosts.name AS host_name, hosts.surname AS host_surname, hosts.phone AS host_phone, hosts.email AS host_mail
               FROM homes
               LEFT JOIN hosts ON homes.host_id = hosts.id
               WHERE homes.id = ?`;
