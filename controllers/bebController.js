@@ -68,6 +68,21 @@ const update = (req, res) => {
   });
 };
 
+//updateLikes
+
+const updateLikes = (req, res) => {
+  const id = req.params.id;
+  const sql = `UPDATE homes 
+SET likes = likes + 1 
+WHERE id = ?;`
+
+  connection.query(sql, [id], (error, results) => {
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ message: `hai aggiunto un like alla casa con id ${id}` });
+  })
+}
+
+
 //store
 const storeHomes = (req, res) => {
   const {
@@ -117,6 +132,7 @@ module.exports = {
   index,
   show,
   update,
+  updateLikes,
   storeHomes,
   storeReview,
 };
