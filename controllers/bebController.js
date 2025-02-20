@@ -53,21 +53,30 @@ const show = (req, res) => {
               LEFT JOIN hosts ON homes.host_id = hosts.id
               WHERE homes.id = ?`;
 
-  const sqReviews = `SELECT * FROM reviews WHERE home_id = ?`;
+  const sqlReviews = `SELECT * FROM reviews WHERE home_id = ?`;
+  const sqlImgs = `SELECT * FROM images WHERE home_id = ?`;
 
   connection.query(sql, [id], (error, result) => {
     if (error) return res.status(500).json({ error: error.message });
-    if (result.length === 0)
-      return res.status(404).json({ error: "Not found" });
+    if (result.length === 0) return res.status(404).json({ error: "Not found" });
 
     let dbReviews = result[0];
 
-    connection.query(sqReviews, [id], (error, result) => {
+    connection.query(sqlReviews, [id], (error, reviewResult) => {
       if (error) return res.status(500).json({ error: error.message });
-      dbReviews.reviews = result;
+      dbReviews.reviews = reviewResult;
 
-      res.json(dbReviews);
     });
+
+    connection.query(sqlImgs, [id], (error, imgResult) => {
+      if (error) return res.status(500).json({ error: error.message });
+      const imgData = imgResult.map(img => ({
+        ...img,
+        url: `${req.imagePath}/${img.url}`
+      }));
+      dbReviews.images = imgData.map((img) => img.url)
+      res.json(dbReviews);
+    })
   });
 };
 
