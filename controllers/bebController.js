@@ -2,7 +2,7 @@ const connection = require("../data/db");
 
 // rotta index
 const index = (req, res) => {
-  const sqlAvg = `SELECT homes.*, ROUND(AVG(reviews.vote), 0) AS avg_vote
+  const sqlAvg = `SELECT homes.*, ROUND(AVG(reviews.vote), 0) AS avg_vote, hosts.id AS host_id, hosts.name AS host_name, hosts.surname AS host_surname, hosts.email AS host_mail, hosts.phone AS host_phone
   FROM homes
   LEFT JOIN reviews ON homes.id = reviews.home_id
   LEFT JOIN hosts ON homes.host_id = hosts.id
