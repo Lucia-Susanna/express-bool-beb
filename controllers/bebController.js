@@ -108,6 +108,7 @@ const storeReview = (req, res) => {
 module.exports = {
   index,
   show,
+  updateLikes,
   storeHomes,
   storeReview,
 };
