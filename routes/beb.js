@@ -6,9 +6,7 @@ router.get("/", controller.index);
 
 router.get("/:id", controller.show);
 
-router.put("/:id", controller.update);
-
-router.patch("/:id", controller.updateLikes)
+router.patch("/:id", controller.updateLikes);
 
 router.post("/:id/reviews", controller.storeReview);
 
