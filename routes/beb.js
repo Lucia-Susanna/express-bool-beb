@@ -6,12 +6,8 @@ router.get("/", controller.index);
 
 router.get("/:id", controller.show);
 
-<<<<<<< HEAD
 router.put("/:id", controller.update);
 
 router.post("/", controller.store);
-=======
-router.post('/:id/reviews', controller.storeReview)
->>>>>>> main
 
 module.exports = router;
