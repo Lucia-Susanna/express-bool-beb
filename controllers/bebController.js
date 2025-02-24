@@ -31,7 +31,7 @@ const index = (req, res) => {
     sql += " WHERE " + conditions.join(" AND ");
   }
 
-  sql += " GROUP BY homes.id";
+  sql += " GROUP BY homes.id ORDER BY homes.likes DESC";
 
   const sqlImg = `SELECT home_id, url FROM images`;
 
