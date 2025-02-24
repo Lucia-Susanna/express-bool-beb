@@ -20,9 +20,9 @@ const index = (req, res) => {
 
       // mappo imgResults in modo da modficare l'url concatendndo il path dato nel middleware con quello che mi arriva dal db.
       // ottengo imagedata che è un array di oggetti con tutte le immagini (home_id e url)
-      const imgData = imgResult.map(img => ({
+      const imgData = imgResult.map((img) => ({
         ...img,
-        url: `${req.imagePath}/${img.url}`
+        url: `${req.imagePath}/${img.url}`,
       }));
 
       // creo un nuovo array di oggetti definitivo che chiamo homes.
@@ -33,7 +33,7 @@ const index = (req, res) => {
           ...home,
           imgs: imgData
             .filter((img) => img.home_id === home.id)
-            .map((img) => img.url)
+            .map((img) => img.url),
         };
       });
 
@@ -41,7 +41,6 @@ const index = (req, res) => {
       res.json(homes);
     });
   });
-
 };
 
 //show
@@ -58,36 +57,25 @@ const show = (req, res) => {
 
   connection.query(sql, [id], (error, result) => {
     if (error) return res.status(500).json({ error: error.message });
-    if (result.length === 0) return res.status(404).json({ error: "Not found" });
+    if (result.length === 0)
+      return res.status(404).json({ error: "Not found" });
 
     let dbReviews = result[0];
 
     connection.query(sqlReviews, [id], (error, reviewResult) => {
       if (error) return res.status(500).json({ error: error.message });
       dbReviews.reviews = reviewResult;
-
     });
 
     connection.query(sqlImgs, [id], (error, imgResult) => {
       if (error) return res.status(500).json({ error: error.message });
-      const imgData = imgResult.map(img => ({
+      const imgData = imgResult.map((img) => ({
         ...img,
-        url: `${req.imagePath}/${img.url}`
+        url: `${req.imagePath}/${img.url}`,
       }));
-      dbReviews.images = imgData.map((img) => img.url)
+      dbReviews.images = imgData.map((img) => img.url);
       res.json(dbReviews);
-    })
-  });
-};
-
-//update
-const update = (req, res) => {
-  const id = req.params.id;
-  const sql = `UPDATE homes SET ? WHERE id = ?`;
-
-  connection.query(sql, [req.body, id], (error, result) => {
-    if (error) return res.status(500).json({ error: error.message });
-    res.json({ message: "Modifica effettuata" });
+    });
   });
 };
 
