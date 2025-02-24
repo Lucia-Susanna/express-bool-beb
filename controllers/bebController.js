@@ -4,10 +4,9 @@ const connection = require("../data/db");
 const index = (req, res) => {
   const { city, minRooms, maxRooms } = req.query;
 
-  let sql = `SELECT homes.*, ROUND(AVG(reviews.vote), 0) AS avg_vote, hosts.id AS host_id, hosts.name AS host_name, hosts.surname AS host_surname, hosts.email AS host_mail, hosts.phone AS host_phone
+  let sql = `SELECT homes.*, ROUND(AVG(reviews.vote), 0) AS avg_vote
   FROM homes
-  LEFT JOIN reviews ON homes.id = reviews.home_id
-  LEFT JOIN hosts ON homes.host_id = hosts.id`;
+  LEFT JOIN reviews ON homes.id = reviews.home_id`;
 
   let conditions = [];
   let values = [];
@@ -59,9 +58,8 @@ const index = (req, res) => {
 const show = (req, res) => {
   const id = req.params.id;
 
-  const sql = `SELECT homes.*, hosts.id AS host_id, hosts.name AS host_name, hosts.surname AS host_surname, hosts.phone AS host_phone, hosts.email AS host_mail
+  const sql = `SELECT *
               FROM homes
-              LEFT JOIN hosts ON homes.host_id = hosts.id
               WHERE homes.id = ?`;
 
   const sqlReviews = `SELECT * FROM reviews WHERE home_id = ?`;
@@ -101,20 +99,15 @@ const updateLikes = (req, res) => {
 //storeHomes
 const storeHomes = (req, res) => {
   const {
-    host_id,
-    description,
-    rooms,
-    beds,
-    restrooms,
-    square_meters,
-    address,
+    description, rooms, beds, restrooms, square_meters, address, host_name, host_surname, host_email, host_phone, thumbnail
   } = req.body;
 
-  const sql = `INSERT INTO homes (host_id, description, rooms, beds, restrooms, square_meters, address, likes) VALUES (?, ?, ?, ?, ?, ?, ?, 0)`;
+  const sql = `INSERT INTO homes (description, rooms, beds, restrooms, square_meters, address, likes, host_name, host_surname, host_email, host_phone, thumbnail) VALUES
+(?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?)`;
 
   connection.query(
     sql,
-    [host_id, description, rooms, beds, restrooms, square_meters, address],
+    [description, rooms, beds, restrooms, square_meters, address, host_name, host_surname, host_email, host_phone, thumbnail],
     (err, results) => {
       if (err) {
         return res.status(500).json({ error: "Query errata" });
@@ -128,12 +121,13 @@ const storeHomes = (req, res) => {
 const storeReview = (req, res) => {
   const id = req.params.id;
 
-  const { name, surname, vote, text } = req.body;
+  const { name, surname, vote, text, check_in_date, stay_duration } = req.body;
 
   const sql =
-    "INSERT INTO reviews (name, surname, vote, text, home_id) VALUES(?, ?, ?, ?, ?)";
+    `INSERT INTO reviews (home_id, name, surname, vote, text, check_in_date, stay_duration) VALUES
+  (?, ?, ?, ?, ?, ?, ?)`;
 
-  connection.query(sql, [name, surname, vote, text, id], (err, results) => {
+  connection.query(sql, [id, name, surname, vote, text, check_in_date, stay_duration], (err, results) => {
     if (err) return res.status(500).json({ error: "query fallita", err });
     res.status(201);
     console.log(results);
