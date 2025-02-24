@@ -14,7 +14,7 @@ const index = (req, res) => {
 
   if (city) {
     conditions.push("homes.address LIKE ?");
-    values.push(`%, ${city}`);
+    values.push(`%${city}`);
   }
 
   if (minRooms) {
