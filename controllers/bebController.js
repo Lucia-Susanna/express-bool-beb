@@ -100,14 +100,10 @@ const index = (req, res) => {
 };
 
 
-//show
 const show = (req, res) => {
   const id = req.params.id;
 
-  const sql = `SELECT *
-              FROM homes
-              WHERE homes.id = ?`;
-
+  const sql = `SELECT * FROM homes WHERE homes.id = ?`;
   const sqlReviews = `SELECT * FROM reviews WHERE home_id = ?`;
   const sqlImgs = `SELECT * FROM images WHERE home_id = ?`;
 
@@ -120,7 +116,25 @@ const show = (req, res) => {
 
     connection.query(sqlReviews, [id], (error, reviewResult) => {
       if (error) return res.status(500).json({ error: error.message });
-      dbReviews.reviews = reviewResult;
+
+      //questo è per non restituire nel json la data in formato "2025-02-25T11:22:24.000Z"
+      dbReviews.reviews = reviewResult.map((review) => ({
+        ...review,
+        check_in_date: review.check_in_date
+          ? new Date(review.check_in_date).toLocaleDateString("it-IT", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          })
+          : null,
+        review_date: review.review_date
+          ? new Date(review.review_date).toLocaleDateString("it-IT", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          })
+          : null,
+      }));
 
       connection.query(sqlImgs, [id], (error, imgResult) => {
         if (error) return res.status(500).json({ error: error.message });
