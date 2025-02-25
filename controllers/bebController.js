@@ -2,7 +2,7 @@ const connection = require("../data/db");
 
 // rotta index
 const index = (req, res) => {
-  const { city, minRooms, maxRooms } = req.query;
+  const { city, minRooms, maxRooms, minBeds, maxBeds, guest, minRestrooms, maxRestrooms } = req.query;
 
   let sql = `SELECT homes.*, ROUND(AVG(reviews.vote), 0) AS avg_vote
   FROM homes
@@ -12,8 +12,13 @@ const index = (req, res) => {
   let values = [];
 
   if (city) {
-    conditions.push("homes.address LIKE ?");
-    values.push(`%${city}`);
+    conditions.push("homes.city LIKE ?");
+    values.push(`%${city}%`);
+  }
+
+  if (guest) {
+    conditions.push("homes.guest_number = ?");
+    values.push(guest);
   }
 
   if (minRooms) {
@@ -24,6 +29,26 @@ const index = (req, res) => {
   if (maxRooms) {
     conditions.push("homes.rooms <= ?");
     values.push(maxRooms);
+  }
+
+  if (minBeds) {
+    conditions.push("homes.beds >= ?");
+    values.push(minBeds);
+  }
+
+  if (maxBeds) {
+    conditions.push("homes.beds <= ?");
+    values.push(maxBeds);
+  }
+
+  if (minRestrooms) {
+    conditions.push("homes.restrooms >= ?");
+    values.push(minRestrooms);
+  }
+
+  if (maxRestrooms) {
+    conditions.push("homes.restrooms <= ?");
+    values.push(maxRestrooms);
   }
 
   if (conditions.length > 0) {
