@@ -1,8 +1,8 @@
 const connection = require("../data/db");
 
-// rotta index
+//index
 const index = (req, res) => {
-  const { city, minRooms, maxRooms, minBeds, maxBeds, guest, minRestrooms, maxRestrooms } = req.query;
+  const { city, minRooms, maxRooms, minBeds, maxBeds, guest, minRestrooms, maxRestrooms, page = 1, limit = 18 } = req.query;
 
   let sql = `SELECT homes.*, ROUND(AVG(reviews.vote), 0) AS avg_vote
   FROM homes
@@ -57,27 +57,48 @@ const index = (req, res) => {
 
   sql += " GROUP BY homes.id ORDER BY homes.likes DESC";
 
+  const offset = (parseInt(page) - 1) * parseInt(limit);
+  sql += " LIMIT ? OFFSET ?";
+  values.push(parseInt(limit), offset);
+
   const sqlImg = `SELECT home_id, url FROM images`;
 
-  connection.query(sql, values, (error, result) => {
+  let sqlCount = `SELECT COUNT(DISTINCT homes.id) AS total FROM homes 
+                  LEFT JOIN reviews ON homes.id = reviews.home_id`;
+  if (conditions.length > 0) {
+    sqlCount += " WHERE " + conditions.join(" AND ");
+  }
+
+  connection.query(sqlCount, values.slice(0, -2), (error, countResult) => {
     if (error) return res.status(500).json({ error: error.message });
 
-    connection.query(sqlImg, (error, imgResult) => {
+    const totalItems = countResult[0].total;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    connection.query(sql, values, (error, result) => {
       if (error) return res.status(500).json({ error: error.message });
 
-      const homes = result.map((home) => {
-        return {
+      connection.query(sqlImg, (error, imgResult) => {
+        if (error) return res.status(500).json({ error: error.message });
+
+        const homes = result.map((home) => ({
           ...home,
           imgs: imgResult
             .filter((img) => img.home_id === home.id)
             .map((img) => img.url),
-        };
-      });
+        }));
 
-      res.json(homes);
+        res.json({
+          data: homes,
+          currentPage: parseInt(page),
+          totalPages: totalPages,
+          totalItems: totalItems,
+        });
+      });
     });
   });
 };
+
 
 //show
 const show = (req, res) => {
