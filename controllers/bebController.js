@@ -83,9 +83,10 @@ const index = (req, res) => {
 
         const homes = result.map((home) => ({
           ...home,
+          thumbnail: req.imagePath + home.thumbnail,
           imgs: imgResult
             .filter((img) => img.home_id === home.id)
-            .map((img) => img.url),
+            .map((img) => req.imagePath + img.url),
         }));
 
         res.json({
@@ -117,6 +118,8 @@ const show = (req, res) => {
     connection.query(sqlReviews, [id], (error, reviewResult) => {
       if (error) return res.status(500).json({ error: error.message });
 
+      dbReviews.thumbnail = req.imagePath + dbReviews.thumbnail;
+
       //questo è per non restituire nel json la data in formato "2025-02-25T11:22:24.000Z"
       dbReviews.reviews = reviewResult.map((review) => ({
         ...review,
@@ -138,7 +141,7 @@ const show = (req, res) => {
 
       connection.query(sqlImgs, [id], (error, imgResult) => {
         if (error) return res.status(500).json({ error: error.message });
-        dbReviews.images = imgResult.map((img) => img.url);
+        dbReviews.images = imgResult.map((img) => req.imagePath + img.url);
         res.json(dbReviews);
       });
     });
