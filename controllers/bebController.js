@@ -2,7 +2,7 @@ const connection = require("../data/db");
 
 //index
 const index = (req, res) => {
-  const { city, minRooms, minBeds, guest, minRestrooms, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron, page = 1, limit = 18 } = req.query;
+  const { city, type, accomodation_type, minRooms, minBeds, guest, minRestrooms, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron, page = 1, limit = 18 } = req.query;
 
   let sql = `SELECT homes.*, ROUND(AVG(reviews.vote), 0) AS avg_vote
   FROM homes
@@ -14,6 +14,16 @@ const index = (req, res) => {
   if (city) {
     conditions.push("homes.city LIKE ?");
     values.push(`%${city}%`);
+  }
+
+  if (type) {
+    conditions.push("homes.type LIKE ?");
+    values.push(`${type}`);
+  }
+
+  if (accomodation_type) {
+    conditions.push("homes.accomodation_type LIKE ?");
+    values.push(`${accomodation_type}`);
   }
 
   if (guest) {
