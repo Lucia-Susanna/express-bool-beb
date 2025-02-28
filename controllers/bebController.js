@@ -2,7 +2,7 @@ const connection = require("../data/db");
 
 //index
 const index = (req, res) => {
-  const { city, minRooms, maxRooms, minBeds, maxBeds, guest, minRestrooms, maxRestrooms, page = 1, limit = 18 } = req.query;
+  const { city, minRooms, minBeds, guest, minRestrooms, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron, page = 1, limit = 18 } = req.query;
 
   let sql = `SELECT homes.*, ROUND(AVG(reviews.vote), 0) AS avg_vote
   FROM homes
@@ -26,19 +26,9 @@ const index = (req, res) => {
     values.push(minRooms);
   }
 
-  if (maxRooms) {
-    conditions.push("homes.rooms <= ?");
-    values.push(maxRooms);
-  }
-
   if (minBeds) {
     conditions.push("homes.beds >= ?");
     values.push(minBeds);
-  }
-
-  if (maxBeds) {
-    conditions.push("homes.beds <= ?");
-    values.push(maxBeds);
   }
 
   if (minRestrooms) {
@@ -46,9 +36,49 @@ const index = (req, res) => {
     values.push(minRestrooms);
   }
 
-  if (maxRestrooms) {
-    conditions.push("homes.restrooms <= ?");
-    values.push(maxRestrooms);
+  if (wifi) {
+    conditions.push("homes.wifi = ?")
+    values.push(wifi)
+  }
+
+  if (tv) {
+    conditions.push("homes.tv = ?")
+    values.push(tv)
+  }
+
+  if (pool) {
+    conditions.push("homes.pool = ?")
+    values.push(pool)
+  }
+
+  if (kitchen) {
+    conditions.push("homes.kitchen = ?")
+    values.push(kitchen)
+  }
+
+  if (washing_machine) {
+    conditions.push("homes.washing_machine = ?")
+    values.push(washing_machine)
+  }
+
+  if (heating) {
+    conditions.push("homes.heating = ?")
+    values.push(heating)
+  }
+
+  if (air_conditioning) {
+    conditions.push("homes.air_conditioning = ?")
+    values.push(air_conditioning)
+  }
+
+  if (hairdryer) {
+    conditions.push("homes.hairdryer = ?")
+    values.push(hairdryer)
+  }
+
+  if (iron) {
+    conditions.push("homes.iron = ?")
+    values.push(iron)
   }
 
   if (conditions.length > 0) {
@@ -162,18 +192,18 @@ const updateLikes = (req, res) => {
 //storeHomes
 const storeHomes = (req, res) => {
   const {
-    description, rooms, beds, restrooms, square_meters, address, host_name, host_surname, host_email, host_phone, thumbnail
+    description, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron
   } = req.body;
 
-  const sql = `INSERT INTO homes (description, rooms, beds, restrooms, square_meters, address, likes, host_name, host_surname, host_email, host_phone, thumbnail) VALUES
-(?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?)`;
+  const sql = `INSERT INTO homes (description, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron) VALUES
+    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `;
 
   connection.query(
     sql,
-    [description, rooms, beds, restrooms, square_meters, address, host_name, host_surname, host_email, host_phone, thumbnail],
+    [description, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron],
     (err, results) => {
       if (err) {
-        return res.status(500).json({ error: "Query errata" });
+        return res.status(500).json({ error: err.sqlMessage });
       }
       res.status(201).json({ message: "home added" });
     }
@@ -187,8 +217,8 @@ const storeReview = (req, res) => {
   const { name, surname, vote, text, check_in_date, stay_duration } = req.body;
 
   const sql =
-    `INSERT INTO reviews (home_id, name, surname, vote, text, check_in_date, stay_duration) VALUES
-  (?, ?, ?, ?, ?, ?, ?)`;
+    `INSERT INTO reviews(home_id, name, surname, vote, text, check_in_date, stay_duration) VALUES
+    (?, ?, ?, ?, ?, ?, ?)`;
 
   connection.query(sql, [id, name, surname, vote, text, check_in_date, stay_duration], (err, results) => {
     if (err) return res.status(500).json({ error: "query fallita", err });
