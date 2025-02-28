@@ -202,15 +202,15 @@ const updateLikes = (req, res) => {
 //storeHomes
 const storeHomes = (req, res) => {
   const {
-    description, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron
+    description, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron
   } = req.body;
 
-  const sql = `INSERT INTO homes (description, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron) VALUES
-    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `;
+  const sql = `INSERT INTO homes (description, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron) VALUES
+    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `;
 
   connection.query(
     sql,
-    [description, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron],
+    [description, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron],
     (err, results) => {
       if (err) {
         return res.status(500).json({ error: err.sqlMessage });
