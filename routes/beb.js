@@ -11,6 +11,6 @@ router.patch("/:id", controller.updateLikes);
 
 router.post("/:id/reviews", controller.storeReview);
 
-router.post("/", upload.fields([{ name: 'thumbnail', maxCount: 1 }, { name: 'foto', maxCount: 1 }]), controller.storeHomes);
+router.post("/", upload.fields([{ name: 'thumbnail', maxCount: 1 }, { name: 'foto1', maxCount: 1 }, { name: 'foto2', maxCount: 1 }]), controller.storeHomes);
 
 module.exports = router;

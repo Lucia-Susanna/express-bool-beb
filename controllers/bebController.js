@@ -224,8 +224,8 @@ const storeHomes = (req, res) => {
   //questo è per sicurezza, per trasformare true o false in 1 o 0
   const toBoolean = (value) => value === "true" || value === true ? 1 : 0;
 
-  const sql = `INSERT INTO homes (description, price, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron, foto) 
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const sql = `INSERT INTO homes (description, price, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron, foto1, foto2) 
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   connection.query(
     sql,
@@ -233,7 +233,7 @@ const storeHomes = (req, res) => {
       description, price, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address,
       host_name, host_surname, host_email, host_phone, thumbnail,
       toBoolean(wifi), toBoolean(tv), toBoolean(pool), toBoolean(kitchen), toBoolean(washing_machine),
-      toBoolean(heating), toBoolean(air_conditioning), toBoolean(hairdryer), toBoolean(iron), foto
+      toBoolean(heating), toBoolean(air_conditioning), toBoolean(hairdryer), toBoolean(iron), foto1, foto2
     ],
     (err, results) => {
 
