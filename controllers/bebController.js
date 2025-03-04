@@ -208,7 +208,7 @@ const updateLikes = (req, res) => {
 const storeHomes = (req, res) => {
 
   const {
-    description, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone,
+    description, price, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone,
     wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron
   } = req.body;
 
@@ -217,13 +217,13 @@ const storeHomes = (req, res) => {
   //questo è per sicurezza, per trasformare true o false in 1 o 0
   const toBoolean = (value) => value === "true" || value === true ? 1 : 0;
 
-  const sql = `INSERT INTO homes (description, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron) 
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const sql = `INSERT INTO homes (description, price, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron) 
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   connection.query(
     sql,
     [
-      description, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address,
+      description, price, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address,
       host_name, host_surname, host_email, host_phone, thumbnail,
       toBoolean(wifi), toBoolean(tv), toBoolean(pool), toBoolean(kitchen), toBoolean(washing_machine),
       toBoolean(heating), toBoolean(air_conditioning), toBoolean(hairdryer), toBoolean(iron)
