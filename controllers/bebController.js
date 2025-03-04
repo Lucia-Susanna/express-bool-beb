@@ -165,6 +165,10 @@ const show = (req, res) => {
 
       dbReviews.thumbnail = req.imagePath + dbReviews.thumbnail;
 
+      dbReviews.foto1 = req.imagePath + dbReviews.foto1;
+
+      dbReviews.foto2 = req.imagePath + dbReviews.foto2;
+
       //questo è per non restituire nel json la data in formato "2025-02-25T11:22:24.000Z"
       dbReviews.reviews = reviewResult.map((review) => ({
         ...review,
@@ -212,13 +216,16 @@ const storeHomes = (req, res) => {
     wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron
   } = req.body;
 
-  const thumbnail = req.file ? req.file.filename : "";
+  const thumbnail = req.files['thumbnail'] ? req.files['thumbnail'][0].filename : "";
+  const foto1 = req.files['foto1'] ? req.files['foto1'][0].filename : "";
+  const foto2 = req.files['foto2'] ? req.files['foto2'][0].filename : "";
+
 
   //questo è per sicurezza, per trasformare true o false in 1 o 0
   const toBoolean = (value) => value === "true" || value === true ? 1 : 0;
 
-  const sql = `INSERT INTO homes (description, price, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron) 
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const sql = `INSERT INTO homes (description, price, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address, host_name, host_surname, host_email, host_phone, thumbnail, wifi, tv, pool, kitchen, washing_machine, heating, air_conditioning, hairdryer, iron, foto) 
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   connection.query(
     sql,
@@ -226,9 +233,10 @@ const storeHomes = (req, res) => {
       description, price, type, accomodation_type, beds, guest_number, rooms, restrooms, square_meters, city, address,
       host_name, host_surname, host_email, host_phone, thumbnail,
       toBoolean(wifi), toBoolean(tv), toBoolean(pool), toBoolean(kitchen), toBoolean(washing_machine),
-      toBoolean(heating), toBoolean(air_conditioning), toBoolean(hairdryer), toBoolean(iron)
+      toBoolean(heating), toBoolean(air_conditioning), toBoolean(hairdryer), toBoolean(iron), foto
     ],
     (err, results) => {
+
       if (err) {
         return res.status(500).json({ error: err.sqlMessage });
       }
